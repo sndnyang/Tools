@@ -69,7 +69,7 @@ def modify_video_srt_file(video_srt_file):
 def return_file_list(path):
     '''get the srt or mp4 file list'''
     video_srt_file = []
-    for entry in os.listdir(os.getcwd()):
+    for entry in os.listdir(path):
         if os.path.isdir(entry):
             opendir(entry)
         elif entry.find('.srt') >= 0 or entry.find('.mp4') >= 0:
@@ -79,6 +79,7 @@ def return_file_list(path):
 def opendir(path):
     '''change to this dir, get the srt or mp4 file list, modify the name'''
     os.chdir(path)
+    path = os.getcwd()
     print 'In the director ' + path + ' : '
 
     video_srt_file = return_file_list(path)    
@@ -89,12 +90,8 @@ def opendir(path):
 
 if __name__ == '__main__':
 
-    #path = raw_input()
     path = 'F:\\video'
     opendir(path)
 
-    '''for entry in os.listdir(cur_dir):
-        if os.path.isdir(entry):
-            opendir(entry)'''
     
     
