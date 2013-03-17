@@ -65,24 +65,26 @@ def modify_video_srt_file(video_srt_file):
 
         except AssertionError:
             continue
-        
-def opendir(path):
-    '''change to this dir, and get the srt or mp4 file list'''
-    os.chdir(path)
-    print 'In the director ' + path + ' : '
 
+def return_file_list(path):
+    '''get the srt or mp4 file list'''
     video_srt_file = []
-
     for entry in os.listdir(os.getcwd()):
         if os.path.isdir(entry):
             opendir(entry)
         elif entry.find('.srt') >= 0 or entry.find('.mp4') >= 0:
             video_srt_file.append(entry)
+    return video_srt_file
+    
+def opendir(path):
+    '''change to this dir, get the srt or mp4 file list, modify the name'''
+    os.chdir(path)
+    print 'In the director ' + path + ' : '
+
+    video_srt_file = return_file_list(path)    
             
-    modify_video_srt_file(video_srt_file)
-    
-    
-                
+    modify_video_srt_file(video_srt_file)   
+                    
     os.chdir('..')    
 
 if __name__ == '__main__':
