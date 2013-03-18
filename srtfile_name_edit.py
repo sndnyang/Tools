@@ -90,7 +90,7 @@ def opendir(path):
 
 if __name__ == '__main__':
 
-    path = 'F:\\video'
+    path = 'F:\\video\\nlp'
     opendir(path)
 
     
