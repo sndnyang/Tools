@@ -1,4 +1,4 @@
-#!/usr/env python
+#!/usr/bin/python
 # -*- coding: cp936 -*-
 
 import wx, os
@@ -13,9 +13,13 @@ class my_frame(wx.Frame):
         #get ready for timer
         self.last_time = 0
         self.timer = wx.Timer(self, wx.ID_ANY)
-        self.Bind(wx.EVT_TIMER, self.TimeOver, self.timer)
+		self.Bind(wx.EVT_TIMER, self.TimeOver, self.timer)
 
-        #add button'''
+		#设置 时刻表 布局
+		moment_table()
+
+		#设置 事件闹钟表 布局
+		event_alarm_table()
         exit_button = wx.Button(panel, label = "exit",
                                 pos = (50, 200), size = (50, 25))
         self.event_button = wx.Button(panel, label = 'Start',
@@ -43,8 +47,7 @@ class my_frame(wx.Frame):
         #add input text
         self.input_text = wx.TextCtrl(panel, -1, "30",
                                  size = (150, 30))
-        self.input_text.SetInsertionPoint(0)        
-
+        self.input_text.SetInsertionPoint(0)
        
     def OnCloseButton(self, event):
         self.Close(True)

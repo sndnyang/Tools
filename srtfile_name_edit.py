@@ -56,12 +56,15 @@ def modify_video_srt_file(video_srt_file):
             assert former[-3:] != latter[-3:]
 
             if latter != video_srt_file[i]:
-                print video_srt_file[i], latter
-                os.rename(video_srt_file[i], latter)
+                print video_srt_file[i]
                 print latter
+                os.rename(video_srt_file[i], latter)
+                
             if former != video_srt_file[i-1]:
-                os.rename(video_srt_file[i-1], former)
+                
+                print video_srt_file[i-1]
                 print former
+                os.rename(video_srt_file[i-1], former)
 
         except AssertionError:
             continue
@@ -86,11 +89,11 @@ def opendir(path):
             
     modify_video_srt_file(video_srt_file)   
                     
-    os.chdir('..')    
+    os.chdir('..')
 
 if __name__ == '__main__':
 
-    path = 'F:\\video\\nlp'
+    path = 'F:\\video'
     opendir(path)
 
     
