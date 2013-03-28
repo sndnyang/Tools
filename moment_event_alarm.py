@@ -233,7 +233,7 @@ class MyFrame(wx.Frame):
         target_file, struct_time = self.open_day_file(parent_path, moment)
 
         # write in format : hour:minute:second --> event
-        event = event.decode('utf-8')
+        event = event.encode('utf-8')
         target_file.write(struct_time[-2] + " --> " + event + '\n')
         
         #never forget to close
@@ -254,46 +254,53 @@ class MyFrame(wx.Frame):
         ''' when the timer call timeover, get an alarm of timeover to me.
         and record what I have done'''
 
-        self.timer.Stop()
-        self.timer.Destroy()
-
         # record the event, start, end, last
         self.OnEventAlarm(event)
 
         # Set button label to start and clear text in all of part event
         self.alarm_start.SetLabel("Start")
-        self.OnClearAlarm()
 
         # call a music file to inform me
-        cmd = r'''"C:\Program Files\Windows Media Player\wmplayer.exe" /play E:\music\chinese\海阔天空.mp3'''
-        os.popen(cmd)
+        path = os.getcwd()
+        
+        if path.find('ython') < 0:
+            filename = 'hai_kuo_tian_kong.mp3'
+        else :
+            filename = r'E:\music\korea\sorry sorry.mp3'
+        
+        os.startfile(filename)
+
+        # clear
+        self.OnClearAlarm(event)
+        self.timer.Stop()
+        self.timer.Destroy()
 
     def OnEventAlarm(self, event):  # wxGlade: MyFrame.<event_handler>
         ''' record the event, time(start, end, last) in event record file'''
 
-        # assumption that I must have entred the start and end time
-        start = self.get_time(self.start_time)
-        end   = self.get_time(self.end_time)
+        if self.timer.IsRunning():
+        # timer is running , stop it, reset the label
+            self.timer.Stop()
+            self.alarm_start.SetLabel("Start")
 
         # last may get from the last_time text_ctrl, but I just do this to compute
-        last = (end - start) / 60
+        last = self.OnGenEnd(event)
 
         # get the content of event
         event = self.get_event(self.alarm_event)
-        if event == None:
+        if event == None or last < 0:
             return
 
         # get the string of start and end time,
-        # alternative way is to get from the text_ctrl
-        start_str = time.ctime(start)
-        end_str = time.ctime(end)
+        start_str = self.start_time.GetValue()
+        end_str = self.end_time.GetValue()
 
         # open the day file to write
         parent_path = "F:\\self\\event_record\\"
         target_file, struct_time = self.open_day_file(parent_path, start_str)
         
         # in the format like this : start to end  last  --> event
-        event = event.decode('utf-8')
+        event = event.encode('utf-8')
         target_file.write(start_str.split()[-2] + " to " + end_str.split()[-2] + \
                           '  %5.2f  '%last + ' --> ' + event + '\n')
         target_file.close()
@@ -358,21 +365,23 @@ class MyFrame(wx.Frame):
                     end_time = time.time()
                     self.end_time.SetValue(time.asctime())
                     
-                elif end_time < time.time():
-                # if the end time is past, there is no use to start the alarm
+                elif end_time < start_time:
+                # if the end time is before the start time,
+                # there is no use to gene the end time
                     return -1
                 
                 # just know start time and end time, so compute the last time    
                 last_time = (end_time  - start_time) / 60
+
                 self.last_time.SetValue('%.2f'%last_time)                
                 return last_time
 
             # last is not empty
-            last_time = float(last_time) * 60            
+            last_time = float(last_time)           
 
             # compute the end time
             if start_time > 0 and last_time > 0 :
-                end_time = start_time + float(last_time)
+                end_time = start_time + float(last_time) * 60
                 self.end_time.SetValue(time.ctime(end_time))
             
             return last_time
@@ -389,12 +398,10 @@ class MyFrame(wx.Frame):
             return -1
         
     def OnClose(self, event):  # wxGlade: MyFrame.<event_handler>
-        self.Close(True)
+        self.CloseWindow(event)
 
 # end of class MyFrame
 if __name__ == "__main__":
-    reload(sys)  
-    sys.setdefaultencoding("utf-8")
     moment_event_alarm = wx.PySimpleApp(0)
     wx.InitAllImageHandlers()
     main_frame = MyFrame(None, -1, "")
