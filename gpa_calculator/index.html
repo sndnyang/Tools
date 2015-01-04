@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0063)base.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+
+    <title>GPA calculator for all </title>
+    <script src="static/js/function.js"></script>
+    <script src="static/js/UploadFile.js"></script>
+    <script src="static/js/file.js"></script>
+    <script src="static/js/jquery-1.8.2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="static/css/c5.css">
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+</head>
+
+<body id="homefirst">
+
+<div id="wrapper">
+
+    <div id="header_index">
+        <a href="" title="w3school 在线教程" style="float:left;">w3school 在线教程</a>
+    </div>
+
+    <div id="navfirst">
+        <ul id="menu">
+            <li id="h"><a href="" title="这个没用">这个没用</a></li>
+            <li id="b"><a href="" title="也是没用">也是没用</a></li>
+            <li id="s"><a href="" title="还是没用">还是没用</a></li>
+            <li id="d"><a href="" title="仍是没用">仍是没用</a></li>
+            <li id="x"><a href="" title="就是没用">就是没用</a></li>
+            <li id="m"><a href="" title="说了没用">说了没用</a></li>
+            <li id="w"><a href="" title="确实没用">确实没用</a></li>
+        </ul>
+    </div>
+
+    <div id="navsecond">
+         <div style=" padding:5px 10px 10px 0; font-size:16px; " align="center">现有模板</div>
+            <ul>
+            </ul>
+    </div>
+
+
+    <div id="maincontent">
+
+        <div>
+            可上传文件
+            <input type="file" id="file" onchange="uploadFiles(this.files)">
+            请按照格式 课程名 ? 百分制? 4分制 ? 等级制 ? 学分 ? 学时 
+        </div>
+
+        <div>
+            <input type="text" id="type">分隔符类型， 支持逗号、分号、空格、 tab
+        </div>
+        
+        定制文件格式， 学分必选， 三种分数你好歹选一种吧？
+        <br>
+        <input type="checkbox" name="select" value="0" checked="checked" >课程名
+        <input type="checkbox" name="select" value="1" checked="checked" >百分制
+        <input type="checkbox" name="select" value="2" checked="checked" >4分制 
+        <input type="checkbox" name="select" value="3" checked="checked" >等级制
+        <input type="checkbox" name="select" value="4" checked="checked" >学分  
+        <input type="checkbox" name="select" value="5" checked="checked" >学时  
+        
+        
+        <div>
+        <textarea id="grade" style="border:solid 1px" rows="20" cols="100"></textarea>
+        </div>
+        <input type="button" value="计算" onclick="calit();"> 
+        <div id="content">
+
+        </div>
+
+    </div>
+
+    <div id="footer">
+        <p>
+            这是 gpa calculator。 made in China, 杨秀隆 xiulong.yancey.yang@gmail.com
+        </p>
+    </div>
+
+</div>
+
+
+</body></html>
