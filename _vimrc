@@ -17,9 +17,10 @@ filetype plugin on
 filetype plugin indent on
 
 " 非兼容vi模式。去掉讨厌的有关vi一致性模式，避免以前版本的一些bug和局限
-set nocompatible      
 set autoread          	" 文件修改之后自动载入。
 set shortmess=atI       " 启动的时候不显示那个援助索马里儿童的提示
+
+set backspace=indent,eol,start
 
 " 取消备份。
 " Turn backup off, since most stuff is in SVN, git et.c anyway...
@@ -33,15 +34,16 @@ set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
+set textwidth=79
 
 "显示行号：
 set number
-set nowrap                    " 取消换行。
+"set nowrap                    " 取消换行。
 
 "括号配对情况
 set showmatch
 " How many tenths of a second to blink when matching brackets
-set mat=2
+" set mat=2
 
 "设置文内智能搜索提示
 " 高亮search命中的文本。
@@ -127,20 +129,80 @@ Plugin 'VundleVim/Vundle.vim'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-Plugin 'tpope/vim-fugitive'
 " plugin from http://vim-scripts.org/vim/scripts.html
 Plugin 'L9'
-" Git plugin not hosted on GitHub
-Plugin 'git://git.wincent.com/command-t.git'
-" git repos on your local machine (i.e. when working on your own plugin)
-Plugin 'file:///home/gmarik/path/to/plugin'
+" Plugin 'load_template'
 " The sparkup vim script is in a subdirectory of this repo called vim.
 " Pass the path to set the runtimepath properly.
-Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " Avoid a name conflict with L9
-Plugin 'user/L9', {'name': 'newL9'}
+"Plugin 'user/L9', {'name': 'newL9'}
+Plugin 'pydiction'
+Plugin 'pythoncomplete'
+Plugin 'taglist.vim'
+Plugin 'snipMate'
+Plugin 'c.vim'
+Plugin 'The-NERD-tree'
+Plugin 'SuperTab'
+Plugin 'Tagbar'
+Plugin 'winmanager'
+Plugin 'pep8'
+Plugin 'minibufexpl.vim'
+Plugin 'Auto-Pairs'
+Plugin 'bufexplorer.zip'
+"Plugin 'Valloric/YouCompleteMe'
+
+set completeopt=longest,menu
+"自动补全命令时候使用菜单式匹配列表  
+set wildmenu
+autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType java set omnifunc=javacomplete#Complet
+
+au BufRead *.py map <buffer> <F9> :w<CR>:!/usr/bin/env python % <CR>
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
+
+set tags=tags; 
+set autochdir
+let Tlist_Show_One_File=1 
+let Tlist_Exit_OnlyWindow=1
+let Tlist_Process_File_Always=1
+
+let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
+autocmd FileType py set shiftwidth=4 | set expandtab
+let g:pydiction_menu_height = 3
+
+let g:template_path = '$HOME\.vim\templates\'
+iab xdate <c-r>=strftime("%Y-%m-%d %H:%M:%S")<CR>
+iab xfile <c-r>=expand("%:t")<CR>
+
+let g:NERDTree_title="[NERDTree]"
+let g:winManagerWindowLayout="NERDTree|TagList"
+
+function! NERDTree_Start()
+    exec 'NERDTree'
+endfunction
+
+function! NERDTree_IsValid()
+    return 1
+endfunction
+
+" 在~/.vim/plugin目录下的winmanager.vim文件中找到以下函数定义并在第5行下添加第6行的内容
+" 
+"     function! <SID>ToggleWindowsManager()
+"        if IsWinManagerVisible()
+"           call s:CloseWindowsManager()
+"        else
+"           call s:StartWindowsManager()
+"           exe 'q'
+"        end
+"     endfunction
+"let g:winManagerWindowLayout='TagList|FileExplorer,MiniBufExplorer'
+nmap wm :WMToggle<cr>
