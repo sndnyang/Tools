@@ -147,6 +147,8 @@ Plugin 'SuperTab'
 Plugin 'Tagbar'
 Plugin 'winmanager'
 Plugin 'pep8'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'minibufexpl.vim'
 Plugin 'Auto-Pairs'
 Plugin 'bufexplorer.zip'
@@ -206,3 +208,5 @@ endfunction
 "     endfunction
 "let g:winManagerWindowLayout='TagList|FileExplorer,MiniBufExplorer'
 nmap wm :WMToggle<cr>
+
+let g:airline#extensions#tabline#enabled = 1
