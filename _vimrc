@@ -146,10 +146,10 @@ Plugin 'The-NERD-tree'
 Plugin 'SuperTab'
 Plugin 'Tagbar'
 Plugin 'winmanager'
-Plugin 'pep8'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'minibufexpl.vim'
+Plugin 'pep8'
+"Plugin 'minibufexpl.vim'
 Plugin 'Auto-Pairs'
 Plugin 'bufexplorer.zip'
 "Plugin 'Valloric/YouCompleteMe'
@@ -196,17 +196,16 @@ function! NERDTree_IsValid()
     return 1
 endfunction
 
-" 在~/.vim/plugin目录下的winmanager.vim文件中找到以下函数定义并在第5行下添加第6行的内容
-" 
-"     function! <SID>ToggleWindowsManager()
-"        if IsWinManagerVisible()
-"           call s:CloseWindowsManager()
-"        else
-"           call s:StartWindowsManager()
-"           exe 'q'
-"        end
-"     endfunction
 "let g:winManagerWindowLayout='TagList|FileExplorer,MiniBufExplorer'
 nmap wm :WMToggle<cr>
+"设置切换Buffer快捷键"
+nnoremap <C-N> :bn<CR>
+nnoremap <C-P> :bp<CR>
 
 let g:airline#extensions#tabline#enabled = 1
+"let g:airline_powerline_fonts = 1
+"let g:airline#extensions#whitespace#enabled = 0
+
+"设置顶部tabline栏符号显示"
+"let g:airline#extensions#tabline#left_sep = \u2b80"
+"let g:airline#extensions#tabline#left_alt_sep = \u2b81"
