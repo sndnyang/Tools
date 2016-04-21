@@ -11,7 +11,8 @@ if sys.getdefaultencoding() != 'utf8':
             
 AUTHOR = u'sndnyang'
 SITENAME = u'\u61d2\u9f99\u8c37'
-SITEURL = ''
+DISQUS_SITENAME = 'sndnyang'
+SITEURL = 'sndnyang.github.io'
 
 MARKUP=('rst', 'md', 'markdown')
 PATH = 'content'
