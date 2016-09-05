@@ -14,3 +14,5 @@ chroma（色彩）
 act(行动)
 judic(to judge 判断)
 aper=open(开)
+aur(耳，听)
+tire(顺序)
