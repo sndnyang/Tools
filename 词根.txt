@@ -16,3 +16,5 @@ judic(to judge 判断)
 aper=open(开)
 aur(耳，听)
 tire(顺序)
+acri尖锐 
+mon警告
