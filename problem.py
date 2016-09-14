@@ -88,9 +88,9 @@ class ProblemPattern(Pattern):
             div.append(br)
 
         elif parts[0] == "text":
-            blank = '<input type="text" class="quiz">'
+            blank = '<input type="text" class="quiz"/>'
             question = question.replace('_', blank)
-            div.append(etree.fromstring(question))
+            div.append(etree.fromstring('<p>'+question+'</p>'))
             div.append(br)
             div.append(submit)
             div.append(br)
@@ -98,7 +98,7 @@ class ProblemPattern(Pattern):
         if parts[0] == "formula":
             blank = '<div id="MathPreview"></div><br>\n'
             blank += '<input type="text" class="quiz formula" '
-            blank += 'onchange="Preview.Update(this)">\n' 
+            blank += 'onchange="Preview.Update(this)"/>\n' 
 
             question = question.replace('_', '<br>'+blank+'<br>')
 
