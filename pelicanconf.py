@@ -12,7 +12,7 @@ if sys.getdefaultencoding() != 'utf8':
 AUTHOR = u'sndnyang'
 SITENAME = u'\u61d2\u9f99\u8c37'
 DISQUS_SITENAME = 'sndnyang'
-SITEURL = 'sndnyang.github.io'
+SITEURL = 'http://sndnyang.github.io'
 
 MARKUP=('rst', 'md', 'markdown')
 PATH = 'content'
@@ -49,14 +49,19 @@ SOCIAL = (('You can add links in your config file', '#'),
           ('Another social link', '#'),)
 
 LANDING_PAGE_ABOUT = {'title': '卧龙凤雏，得一可安天下。', 
-        "details": '''I'm sndnyang, <a href="https://github.com/sndnyang">
+        "details": '''I'm sndnyang, <a href="http://sndnyang.github.io">
         sndnyang</a> at github and  <a href="http://blog.csdn.net/sndnyangd">
         sndnyangd</a> at csdn.<br>
         有理想，没动作的卧龙。
         '''}
+
 DEFAULT_PAGINATION = 10
 
 PROJECTS = [{
+    'name': '幻灯片',
+    'url': 'slides_set.html',
+    'description': '制作的文本幻灯片集合， 应该多数是读论文的笔记'},
+    {
     'name': 'gpa 计算器',
     'url': 'gpa_calculator.html',
     'description': '就是一个计算器'},
@@ -67,10 +72,15 @@ PROJECTS = [{
     {'name': 'brain learn lab',
     'url': 'http://zhimind.com',
     'description': 'a project I hope to push the education field forward! Make'
-    'a difference by all means'}]
+    'a difference by all means'},
+    {'name': '其他',
+    'url': '/other.html',
+    'description': '之前不小心把markdown笔记全部删了， 只剩html， ' 
+        '有些文件不想重新制作'}]
 
-disqus_identifier = "sndnyang"   
+#disqus_identifier = "sndnyang.github.io"   
 
 RECENT_ARTICLES_COUNT = 15
+COMMENTS_INTRO  = "this man is lazy, nothing left"
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
