@@ -35,3 +35,13 @@ print t.groupby('c').count().sort_values('a')
 
 #print data[:3]
 
+tmp = data[data['lenovo'] == ""]
+
+a = pd.Series([e[0] for e in tmp['word']])
+
+t = pd.DataFrame({'c': a})
+
+t['a'] = 1
+
+print t.groupby('c').count().sort_values('a')
+
