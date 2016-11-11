@@ -45,6 +45,9 @@ set showmatch
 " How many tenths of a second to blink when matching brackets
 " set mat=2
 
+set vb t_vb=
+au GuiEnter * set t_vb=
+
 "设置文内智能搜索提示
 " 高亮search命中的文本。
 set hlsearch          
@@ -186,7 +189,7 @@ iab xdate <c-r>=strftime("%Y-%m-%d %H:%M:%S")<CR>
 iab xfile <c-r>=expand("%:t")<CR>
 
 let g:NERDTree_title="[NERDTree]"
-let g:winManagerWindowLayout="NERDTree|TagList"
+let g:winManagerWindowLayout="NERDTree|Tagbar"
 
 function! NERDTree_Start()
     exec 'NERDTree'
