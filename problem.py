@@ -15,13 +15,16 @@ from __future__ import unicode_literals
 from . import Extension
 from ..preprocessors import Preprocessor
 from ..inlinepatterns import Pattern
-from ..util import etree
 
 import re
 import md5
 
+from lxml import etree
+
+from .qa_parser import *
+
 # 自定义的 problem 格式
-# 格式定义（一行）：
+# 格式定义：
 #    {% type
 #       |可填题干 &
 #       &a&b&c 选择题的选项 
@@ -44,88 +47,114 @@ class ProblemExtension(Extension):
 
     def extendMarkdown(self, md, md_globals):
         """ Insert ProblemPreprocessor before ReferencePreprocessor. """
-        md.inlinePatterns.add('problem', ProblemPattern(BASE_RE), '>not_strong')
+        # md.inlinePatterns.add('problem', ProblemPattern(BASE_RE), '>not_strong')
+        problemer = ProblemProcessor(md)
+        md.registerExtension(self)
+        md.preprocessors.add('problem', problemer,
+                             ">normalize_whitespace")
 
 
-class ProblemPattern(Pattern):
-    """ Problem inline pattern. """
 
-    def __init__(self, pattern):
-        super(ProblemPattern, self).__init__(pattern)
-        self.quiz_count = 0
+def renderQuestion(s, quiz_count):
+    p = re.compile('\s+')
+    s = re.sub(p, '', s, re.M)
+    quiz_type = re.search('^{%(\w+)|', s, re.M).group(1)
 
-    def handleMatch(self, m):
-        sterm = m.group()
+    # div = $('<div class="process"></div>');
+    # feedback = $('<div class="hidden"></div>');
+    # response = $('<div class="math-container"></div>'),
+    # submit = $('<button class="btn btn-info">提交验证</button>');
 
-        pattern = '{%([^|]*)\|([^@]*)@([^#]*)'
-        parts = re.findall(pattern, sterm)[0]
+    div = etree.Element('div')
+    div.set('class', 'process')
 
-        div = etree.Element('div')
-        question = parts[1]
-        br = etree.Element('br')
-        submit = etree.Element('button')
-        submit.text = 'submit'
-        self.quiz_count += 1
-        submit.set('onclick', "checkQuiz(this, %d)"%self.quiz_count)
+    cdiv = etree.Element('div')
+    cdiv.set('class', 'math-container')
 
-        if parts[0] == "radio" or parts[0] == "checkbox":
-            etype = parts[0]
-            qparts = question.split('&')
-            p = etree.Element('p')
-            p.text = qparts[0]
-            div.append(p)
-            template = '<input type="%s" class="quiz" name="quiz" value="%s">'\
-                    +'</input>'
-            for v in qparts[1:]:
-                ele = etree.fromstring(template % (etype, v))
-                label = etree.Element('b')
-                label.text = v
-                div.append(ele)
-                div.append(label)
-                div.append(br)
+    span = etree.Element('span')
 
-            div.append(submit)
-            div.append(br)
+    question = s[s.find('|')+1:s.find('@')].strip()
 
-        elif parts[0] == "text":
-            blank = '<input type="text" class="quiz"/>'
-            question = question.replace('_', blank)
-            div.append(etree.fromstring('<p>'+question+'</p>'))
-            div.append(br)
-            div.append(submit)
-            div.append(br)
+    submit = etree.Element('button')
+    submit.text = 'submit'
+    submit.set('onclick', "checkQuiz(this, %d)"%quiz_count)
 
-        if parts[0] == "formula":
-            blank = '<input type="text" class="quiz formula" '
-            blank += 'onchange="Preview.Update(this)"/>\n' 
-            blank += '<div id="MathPreview"></div>\n'
+    if quiz_type == "radio" or quiz_type == "checkbox":
+        etype = quiz_type
+        qparts = question.split('&')
+        p = etree.Element('p')
+        p.text = qparts[0]
+        span.append(p)
+        template = '<input type="%s" class="quiz" name="quiz" value="%s">%s'\
+                +'</input>'
+        for v in qparts[1:]:
+            ele = etree.fromstring(template % (etype, v, v))
+            span.append(ele)
+            span.append(etree.Element('br'))
 
-            question = question.replace('_', blank)
+        div.append(span)
+        div.append(etree.Element('br'))
 
-            div.append(etree.fromstring('<p>'+question+'</p>'))
-            div.append(submit)
-            div.append(br)
-        else:
-            tmp = md5.new()
-            tmp.update(parts[2])
-            encry = tmp.hexdigest()
-            template = '<input type="hidden" class="answers" value="%s"></input>'
-            ele = template % encry
-            div.append(etree.fromstring(ele))
+    elif quiz_type == "text":
+        blank = '<input type="text" class="quiz"/>'
+        question = question.replace('_', blank)
+        span.append(etree.fromstring('<p>'+question+'</p>'))
+        div.append(span)
+        div.append(etree.Element('br'))
 
-        comment_pos = sterm.find('#')
-        if comment_pos:
-            comments = re.findall('#([^%}]*)', sterm)
-            if comments:
-                comments = comments[0]
-                template = '<input type="hidden" class="comments"></input>'
-                comment = etree.fromstring(template)
-                comment.set('value', comments)
-                div.append(comment)
+    if quiz_type == "formula":
+        blank = '<input type="text" class="quiz formula" '
+        blank += 'onchange="Preview.Update(this)"/>\n' 
+        blank += '<div id="MathPreview"></div>\n'
 
-        div.append(br)
+        question = question.replace('_', blank)
 
-        return div
+        span.append(etree.fromstring('<p>'+question+'</p>'))
+        div.append(span)
+        div.append(etree.Element('br'))
+
+    answers = s[s.find('@')+1:s.find('#')]
+    template = '<input type="hidden" class="answers" value="%s"></input>'
+    ele = template % answers
+    try:
+        div.append(etree.fromstring(ele))
+    except:
+        print answers, ele
+
+    comments = finite_status_machine(s[s.find('#')+1:], '#')
+    if comments:
+        template = '<input type="hidden" class="comments"></input>'
+        comment = etree.fromstring(template)
+        comment.set('value', '#'.join(comments))
+        div.append(comment)
+
+    div.append(submit)
+    div.append(etree.Element('br'))
+
+    # print etree.tostring(div, encoding='utf8')
+    return div
+
+
+class ProblemProcessor(Preprocessor):
+    """ parse multiple line problems"""
+    def run(self, lines):
+        """ find code blocks problems"""
+        content = "\n".join(lines)
+
+        start = content.find("{%")
+        lists = []
+        while start >= 0 and start < len(content):
+            end = find_right_next(content, start, 0, '\n')
+            lists.append(content[start:end])
+            start = content.find("{%", end)
+
+        c = 0
+        for s in lists:
+            html = renderQuestion(s, c)
+            c += 1
+            content = content.replace(s, etree.tostring(html, encoding='utf-8'))
+       
+        return content.split("\n")
 
 
 def makeExtension(*args, **kwargs):
