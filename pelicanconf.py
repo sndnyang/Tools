@@ -14,7 +14,7 @@ SITENAME = u'\u61d2\u9f99\u8c37'
 DISQUS_SITENAME = 'sndnyang'
 SITEURL = 'http://sndnyang.github.io'
 
-MARKUP=('rst', 'md', 'markdown')
+MARKUP=('rst', 'md', 'markdown', 'dmd')
 PATH = 'content'
 
 TIMEZONE = 'Asia/Shanghai'
@@ -49,16 +49,28 @@ SOCIAL = (('You can add links in your config file', '#'),
           ('Another social link', '#'),)
 
 LANDING_PAGE_ABOUT = {'title': '卧龙凤雏，得一可安天下。', 
-        "details": '''I'm sndnyang, <a href="http://sndnyang.github.io">
-        sndnyang</a> at github and  <a href="http://blog.csdn.net/sndnyangd">
-        sndnyangd</a> at csdn.<br>
-        有理想，没动作的卧龙。
+        "details": '''I'm sndnyang, <a href="https://sndnyang.github.io">
+        sndnyang</a> at github <br>  <a href="http://blog.csdn.net/sndnyangd">
+        sndnyangd</a> at csdn<br> <a href="https://www.zhihu.com/people/yang-xiu-long">
+        杨成</a> at 知乎<br> <a href="http://weibo.com/u/2405149384">sndnyang</a>
+        at 微博。<br>
+        有理想，没动作的懒龙。
         '''}
 
 DEFAULT_PAGINATION = 10
 
-PROJECTS = [{
-    'name': '幻灯片',
+PROJECTS = [{'name': '知维图',
+    'url': 'http://zhimind.com',
+    'description': 'zhimind a project I hope to push the education field forward! Make'
+    'a difference by all means 知维图 智能交互教学实验'},
+    {'name': '格物学习-费曼技巧(实验)',
+    'url': 'http://www.zhimind.com/gewu.html',
+    'description': 'gewu a project I hope to push the education field forward too! Let '
+    'us learn using Feynman Technique 格物学习助手--费曼技巧 (beta)'},
+    {'name': '脑洞单词(实验)',
+    'url': 'http://www.zhimind.com/reciteWord.html',
+    'description': '自己编写联想记忆法，找词根词缀等方式来记忆单词，联想记忆法效率会高一些'},
+    {'name': '幻灯片',
     'url': 'slides_set.html',
     'description': '制作的文本幻灯片集合， 应该多数是读论文的笔记'},
     {
@@ -69,10 +81,9 @@ PROJECTS = [{
     'url': 'ds_alg_code.html',
     'description': 'a project use ideas from tryregex, elegatorsaga, based on'
     'vis.js to learn algorithm'},
-    {'name': 'brain learn lab',
-    'url': 'http://zhimind.com',
-    'description': 'a project I hope to push the education field forward! Make'
-    'a difference by all means'},
+    {'name': 'zhimind编辑器',
+    'url': '/zhimindEditor.html',
+    'description': '基于markdown-it及其插件的markdown在线编辑，正好用于zhimind教程和练习的展示和编辑'},
     {'name': '其他',
     'url': '/other.html',
     'description': '之前不小心把markdown笔记全部删了， 只剩html， ' 
