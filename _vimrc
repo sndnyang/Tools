@@ -1,4 +1,4 @@
-set nocompatible              " be iMproved, required
+﻿set nocompatible              " be iMproved, required
 
 colorscheme darkblue 
 
@@ -155,7 +155,11 @@ Plugin 'pep8'
 "Plugin 'minibufexpl.vim'
 Plugin 'Auto-Pairs'
 Plugin 'bufexplorer.zip'
+Plugin 'python_fold'
+Plugin 'Shougo/neocomplete.vim'
 "Plugin 'Valloric/YouCompleteMe'
+
+let g:neocomplete#enable_at_startup = 1
 
 set completeopt=longest,menu
 "自动补全命令时候使用菜单式匹配列表  
