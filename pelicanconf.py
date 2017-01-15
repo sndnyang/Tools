@@ -54,7 +54,9 @@ LANDING_PAGE_ABOUT = {'title': '卧龙凤雏，得一可安天下。',
         sndnyangd</a> at csdn<br> <a href="https://www.zhihu.com/people/yang-xiu-long">
         杨成</a> at 知乎<br> <a href="http://weibo.com/u/2405149384">sndnyang</a>
         at 微博。<br>
-        有理想，没动作的懒龙。
+        有理想有但很难动作的懒龙。先战教育(启发、交互式教育 zhimind.com），再搞医疗（不会），学习自然语言处理和人工智能、机器学习<br>
+        ambitious but lazy,  first goal is the education(heuristic, interactive education technology www.zhimind.com), then health care(have no idea now)<br>
+        doing these by learning and applying natural language processing and artificial intelligence and machine learning.
         '''}
 
 DEFAULT_PAGINATION = 10
