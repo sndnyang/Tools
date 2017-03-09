@@ -105,7 +105,7 @@ def renderQuestion(s, quiz_count):
     if quiz_type == "formula":
         blank = '<input type="text" class="quiz formula" '
         blank += 'onchange="Preview.Update(this)"/>\n' 
-        blank += '<div id="MathPreview"></div>\n'
+        blank += '<div id="MathPreview">预览:</div>\n'
 
         question = question.replace('_', blank)
 
