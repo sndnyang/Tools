@@ -118,8 +118,8 @@ def renderQuestion(s, quiz_count):
     ele = template % answers
     try:
         div.append(etree.fromstring(ele))
-    except:
-        print answers, ele
+    except Exception,e:
+        print Exception, e, answers, ele
 
     comments = finite_status_machine(s[s.find('#')+1:], '#')
     if comments:
