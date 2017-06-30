@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 # # 有道词典爬取
@@ -7,14 +6,16 @@
 # 
 # [代码来源](https://github.com/longcw/youdao/blob/master/youdao/spider.py)
 
-# In[1]:
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 import re
 import json
 import os
 import requests
 import webbrowser
-from termcolor import colored
+#from termcolor import colored
 from bs4 import BeautifulSoup
 
 
@@ -42,11 +43,13 @@ def printDeep(item, deep):
 
 def addBilingual(example):
     bilingual = example.find(id='bilingual')
+    if not bilingual:
+        return None
     ul = bilingual.find_all('li')
     b = []
     for l in ul:
         t = l.find_all('p')
-        en = ''.join(e.string for e in t[0].find_all('span'))
+        en = ''.join(e.string if e.string else e.text for e in t[0].find_all('span'))
         zh = ''.join(e.string for e in t[1].find_all('span'))
         b.append(':' + en + '    ' + zh)
     return b
@@ -158,34 +161,34 @@ class YoudaoSpider:
         # 英文译义
         # meanEn = root.find(id='tEETrans')
         # 翻译
-        if 'basic' not in self.result:
-            self.result['translation'] = self.get_translation(self.word)
+       #if 'basic' not in self.result:
+       #    self.result['translation'] = self.get_translation(self.word)
 
-        # 网络释义(短语)
-        web = root.find(id='webPhrase')
-        if web:
-            self.result['web'] = [
-                {
-                    'key': unicode(wordgroup.find(class_='search-js').string).strip(),
-                    'value': [v.strip() for v in unicode(wordgroup.find('span').next_sibling).split(';')]
-                } for wordgroup in web.find_all(class_='wordGroup', limit=4)
-            ]
+       ## 网络释义(短语)
+       #web = root.find(id='webPhrase')
+       #if web:
+       #    self.result['web'] = [
+       #        {
+       #            'key': unicode(wordgroup.find(class_='search-js').string).strip(),
+       #            'value': [v.strip() for v in unicode(wordgroup.find('span').next_sibling).split(';')]
+       #        } for wordgroup in web.find_all(class_='wordGroup', limit=4)
+       #    ]
             
-        example = root.find(id='examplesToggle')
-        self.result['example'] = []
-        if not example:
-            return
-        
-        bi = addBilingual(example)
+       #example = root.find(id='examplesToggle')
+       #self.result['example'] = []
+       #if not example:
+       #    return
+       #
+       #bi = addBilingual(example)
 
-        if bi:
-            self.result['example'] += bi
-        other = addExample(example, 'originalSound')
-        if other:
-            self.result['example'] += other
-        other = addExample(example, 'authority')
-        if other:
-            self.result['example'] += other        
+       #if bi:
+       #    self.result['example'] += bi
+       #other = addExample(example, 'originalSound')
+       #if other:
+       #    self.result['example'] += other
+       #other = addExample(example, 'authority')
+       #if other:
+       #    self.result['example'] += other        
 
     def get_translation(self, word):
         """
@@ -248,7 +251,7 @@ if __name__ == '__main__':
         print other
         other = addExample(example, 'authority')
         print other    
-    test = YoudaoSpider('countenance')
+    test = YoudaoSpider('')
     sample = test.get_result()
     result = transform(sample)
     printDeep(result, 2)
