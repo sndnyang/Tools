@@ -43,7 +43,7 @@ def list2df(para):
 def gloss2test(data):
 
     test = {'CET4':'四级', 'CET6':'六级', 'TOFEL':'托福', 
-            'GRE':'GRE', 'GRE3000':'GRE-再要你命3000', 
+            'GRE':'GRE', 'GRE3000':'再要你命三千', 
             'GREmagoosh':'GRE-Magoosh'}
 
     f = file("books.txt", "w")
@@ -56,7 +56,8 @@ def gloss2test(data):
 
         print t, len(subset)
         con  = sq.connect(t.lower() + '.db')
-        subset[subset.columns[:-1]].to_sql('word', con)
+        col = ['word', 'level', 'lenovo', 'etyma', 'meanZh', 'meanEn', 'example', 'phonetic', 'selfLenovo']
+        subset[col].to_sql('word', con)
         con.close()
 
         m = time.strftime('%Y-%m-%d-%H:%M:%S', time.localtime(os.path.getmtime('gloss.xls')))

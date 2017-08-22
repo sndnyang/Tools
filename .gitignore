@@ -5,3 +5,8 @@
 .ipynb_checkpoints/
 
 tags
+
+*.db
+*.xls
+*.xlsx
+*.pyc
