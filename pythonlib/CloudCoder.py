@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 import re
+import sys
+import json
 
-from evernote.api.client import EvernoteClient
-from evernote.edam.notestore import NoteStore
+import requests
+
+from utility import str_obj
 
 def replace_html(s):
     s = s.replace('&quot;','"')
@@ -16,48 +19,73 @@ def replace_html(s):
 
 class CloudCoder:
 
-    def __init__(self):
-        self.auth_token = "os.environ.get('EVERNOTE_TOKEN', None)"
+    # __codeBlockUrl = 'http://localhost:5000/codeBlock'
+    __codeBlockUrl = 'http://www.zhimind.com/codeBlock'
 
-    def get_client(self):
-        sandbox = False
-        china = True
-        self.client = EvernoteClient(token=self.auth_token, sandbox=sandbox, china=china)
-        self.note_store = self.client.get_note_store()
+    def __init__(self, apiKey=""):
 
-    def filterNotes(self, filter, num):
-        spec = NoteStore.NotesMetadataResultSpec()
-        spec.includeTitle = True
-        self.get_client()
-        ourNoteList = self.note_store.findNotesMetadata(self.auth_token, filter, 0, num, spec)
-        return ourNoteList
+        # self._apiKey = apiKey.strip() or os.environ.get("LOCAL_TOKEN", "")
+        self._apiKey = apiKey.strip() or os.environ.get("ZHIMIND_TOKEN", "")
+        self.__connectTimeout = 60.0
+        self.__socketTimeout = 60.0
+        self.__version = '0_0_0'
 
-    def get_markdown(self, match):
-        if self.auth_token:
-            # Set up the NoteStore client
-            filter = NoteStore.NoteFilter()
-            filter.words = "notebook:我的第一个笔记本 " + match
+    def get_list(self, match):
+        if "," not in match and " " in match:
+            match = ",".join(e for e in match.split())
 
-            ourNoteList = self.filterNotes(filter, 1)
-            if not ourNoteList.notes:
-                return "Error: not find note"
-            note = ourNoteList.notes[0]
-            self.note = self.note_store.getNote(self.auth_token, note.guid, True, False, False, False)
-            code = re.sub("<.*?>", '', self.note.content.replace("</d", "\n</d"))
-            return replace_html(code)
+        header = {"Authorization": "Bearer " + self._apiKey}
+        
+        try:
+            r = requests.get(url=self.__codeBlockUrl, params={'keyword': match}, headers=header)
+            r.raise_for_status()
+            print("status: ", r.status_code)
+            return json.loads(r.content.decode('utf-8'), strict=False)
+        except:
+            return ""
 
-        return "Error: no token"
+    def show_titles(self, json):
+        return '\n'.join(e['title'] + ' ' + e['url'] for e in json)
+
+    def get_all_titles(self, match):
+        data = self.get_list(match)
+        if u'msg' in data or u'error' in data:
+            return "Error: not find any one"
+        return self.show_titles(data)
+
+    def get_code(self, match, keys="all"):
+        return self.get_code_by_parts(match, keys)
+
+    def get_code_by_parts(self, match, keys):
+        json = self.get_json(match)
+        if isinstance(json, str):
+            return json
+        if u'msg' in json or u'error' in json:
+            return "Error: not find any one"
+        return self.filter_json(json, keys)
 
     def get_json(self, match):
         return self.convert_md_json(self.get_markdown(match))
 
     def convert_md_json(self, content):
-        if content.startswith("Error: "):
+        if content.startswith("Error:") or content.startswith("Options:"):
             return content
-        maps = {}
+        maps = {"code": ""}
         lines = content.replace("\r", "").split("\n")
         self.to_hierarchy_json(maps, lines, 0, 0)
+        maps.pop("code")
         return maps
+
+    def get_markdown(self, match):
+        if self._apiKey:
+            match_list = self.get_list(match)
+            if len(match_list) == 1:
+                return match_list[0]['content']
+            elif len(match_list) > 1:
+                return "Options:\n" + self.show_titles(match_list)
+            else:
+                return "Error: nothing find"
+        return "Error: no token"
 
     def to_hierarchy_json(self, maps, lines, level, lineno):
         if len(lines) == lineno:
@@ -68,13 +96,17 @@ class CloudCoder:
         
         if not l.strip():
             return self.to_hierarchy_json(maps, lines, level, lineno+1)
-        # print '%4d %4d' % (level, lineno),
-        
+        # print('%4d %4d' % (level, lineno),)
+
         while l.startswith("#"):
-            sharp_count = len(l.split(" ", 1)[0])
-            name = l.split(" ", 1)[1]
-            # print '%4s %4s' % (name, sharp_count)
-            # print l
+            sharp_count = len(re.search("^(#+)", l).group(1))
+            obj = re.search("^#+\s*(.+)$", l)
+            if obj:
+                name = obj.group(1)
+            else:
+                name = u"无标题"
+            # print('%4s %4s' % (name, sharp_count))
+            # print(l)
             if level >= sharp_count:
                 return sharp_count, lineno
             elif level < sharp_count:
@@ -83,22 +115,17 @@ class CloudCoder:
                 if tmp < level or not tmp:
                     return tmp, lineno
                 l = lines[lineno]       
-        # print "add to ", name
-        if name == "code":
+        # print("add to ", name)
+
+        if not level:
+            return self.to_hierarchy_json(maps, lines, level, lineno+1)
+        elif name == "code":
             maps[name] += l + '\n'
         else:
             maps[name]["code"] += l + '\n'    
-        # print l
+        # print(l)
         return self.to_hierarchy_json(maps, lines, level, lineno+1)
 
-    def get_code(self, match, keys="all"):
-        return self.get_code_by_parts(match, keys)
-
-    def get_code_by_parts(self, match, keys):
-        json = self.get_json(match)
-        if isinstance(json, str) and json.startswith("Error: "):
-            return json
-        return self.filter_json(json, keys)
 
     def filter_json(self, json, keys):
         if keys == "all":
@@ -121,7 +148,7 @@ class CloudCoder:
         for k in json:
             if isinstance(json[k], dict):
                 lines.append(self.convert_json_plain(json[k], k))
-            elif isinstance(json[k], str):
+            elif isinstance(json[k], str_obj):
                 if k != "code":
                     lines.append(k)
                 lines.append(json[k])
