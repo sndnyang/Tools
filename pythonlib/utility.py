@@ -25,3 +25,27 @@ def printDeep(item, deep):
                 printDeep(item[e], deep+4)
             else:
                 print(' '*(deep+4), e, ':', item[e])
+
+
+def format_url(href):
+    if href[0] == '/':
+        url = domain + href
+    elif href.startswith('http'):
+        url = href
+    elif href.startswith('//'):
+        url = 'http:' + href
+    elif href.find(university_name) > -1:
+        url = 'http://' + href
+    else:
+        url = "Error!!!!!! at", href
+    return url
+
+
+def replace_html(s):
+    s = s.replace('&quot;','"')
+    s = s.replace('&amp;','&')
+    s = s.replace('&lt;','<')
+    s = s.replace('&gt;','>')
+    s = s.replace('&nbsp;',' ')
+    s = s.replace('\xc2\xa0','')
+    return s
