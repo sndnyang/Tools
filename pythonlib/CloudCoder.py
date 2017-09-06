@@ -5,6 +5,7 @@ import sys
 import json
 
 import requests
+from requests import session
 
 from utility import str_obj
 
@@ -20,7 +21,9 @@ def replace_html(s):
 class CloudCoder:
 
     # __codeBlockUrl = 'http://localhost:5000/codeBlock'
-    __codeBlockUrl = 'http://www.zhimind.com/codeBlock'
+    __codeBlockUrl = 'https://www.zhimind.com/codeBlock'
+    # __uploadCodeUrl = 'http://localhost:5000/uploadCodeBlock'
+    __uploadCodeUrl = 'https://www.zhimind.com/uploadCodeBlock'
 
     def __init__(self, apiKey=""):
 
@@ -29,6 +32,17 @@ class CloudCoder:
         self.__connectTimeout = 60.0
         self.__socketTimeout = 60.0
         self.__version = '0_0_0'
+        self.__client = session()
+
+    def post_code(self, data):
+        header = {"Authorization": "Bearer " + self._apiKey}
+        try:
+            r = requests.post(url=self.__uploadCodeUrl, json=data, headers=header)
+            r.raise_for_status()
+            print("status: ", r.status_code)
+            return json.loads(r.content.decode('utf-8'), strict=False)
+        except:
+            return ""
 
     def get_list(self, match):
         if "," not in match and " " in match:
