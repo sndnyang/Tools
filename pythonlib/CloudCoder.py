@@ -33,7 +33,6 @@ class CloudCoder:
             self.__uploadCodeUrl = 'http://localhost:5000/uploadCodeBlock'
         else:
             self._apiKey = apiKey.strip() or os.environ.get("ZHIMIND_TOKEN", "")
-        print(self._apiKey)
         self.__connectTimeout = 60.0
         self.__socketTimeout = 60.0
         self.__version = '0_0_0'
@@ -48,7 +47,6 @@ class CloudCoder:
                               verify=False)
             r.raise_for_status()
             print("status: ", r.status_code)
-            print(r.content.decode('utf-8'))
             return json.loads(r.content.decode('utf-8'), strict=False)
         except:
             print(traceback.print_exc())
@@ -93,8 +91,6 @@ class CloudCoder:
         return self.convert_md_json(self.get_markdown(match))
 
     def convert_md_json(self, content):
-        print(content)
-        print(content.startswith("\nOptions"))
         if content.startswith("Error:") or content.startswith("\nOptions"):
             return content
         maps = {"code": ""}
@@ -106,7 +102,6 @@ class CloudCoder:
     def get_markdown(self, match):
         if self._apiKey:
             match_list = self.get_list(match)
-            print(match_list)
             if "error" in match_list:
                 return "Error: nothing find"
             if len(match_list) == 1:
