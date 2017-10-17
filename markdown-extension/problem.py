@@ -12,6 +12,9 @@ for documentation.
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
+import sys
+import traceback
 from . import Extension
 from ..preprocessors import Preprocessor
 from ..inlinepatterns import Pattern
@@ -114,12 +117,16 @@ def renderQuestion(s, quiz_count):
         div.append(etree.Element('br'))
 
     answers = s[s.find('@')+1:s.find('#')]
-    template = '<input type="hidden" class="answers" value="%s"></input>'
+    template = 
     ele = template % answers
     try:
-        div.append(etree.fromstring(ele))
-    except Exception,e:
-        print Exception, e, answers, ele
+        t = etree.fromstring('<input type="hidden" class="answers"/>')
+        t.set("value", answers)
+        div.append(t)
+    except:
+        sys.stderr.write(ele + '    ' + answers)
+        print answers, ele
+        print traceback.print_exc()
 
     comments = finite_status_machine(s[s.find('#')+1:], '#')
     if comments:
