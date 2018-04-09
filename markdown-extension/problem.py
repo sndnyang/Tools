@@ -117,8 +117,6 @@ def renderQuestion(s, quiz_count):
         div.append(etree.Element('br'))
 
     answers = s[s.find('@')+1:s.find('#')]
-    template = 
-    ele = template % answers
     try:
         t = etree.fromstring('<input type="hidden" class="answers"/>')
         t.set("value", answers)
