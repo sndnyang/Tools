@@ -1,0 +1,20 @@
+
+nvidia-smi > ~/nv.txt
+
+start_line=`grep -n "|  GPU" ../nv.txt | cut -d \: -f 1`
+
+cat ~/nv.txt
+
+grep -nE "^\|   " ~/nv.txt | while read line
+do
+    no=`echo $line | cut -d\: -f 1`
+    if (( $no > $start_line ))
+    then
+        t=`echo $line | cut -d\: -f 2`
+        echo "$t"
+        gpuid=`echo $line | cut -d\  -f 3`
+        # echo $gpuid
+        ps aux | grep -w $gpuid | grep -v "grep -w"
+    fi
+done
+
