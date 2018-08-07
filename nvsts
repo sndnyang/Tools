@@ -1,7 +1,7 @@
 
 nvidia-smi > ~/nv.txt
 
-start_line=`grep -n "|  GPU" ../nv.txt | cut -d \: -f 1`
+start_line=`grep -n "|  GPU" ~/nv.txt | cut -d \: -f 1`
 
 cat ~/nv.txt
 

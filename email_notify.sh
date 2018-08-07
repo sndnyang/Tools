@@ -1,5 +1,5 @@
 #!/bin/bash
-receiver="xyang22@student.gsu.edu"
+receiver=
 
 while true
 do
@@ -9,7 +9,7 @@ do
     touch monitor_process.new
     while read line
     do
-        process=`ps aux | grep xyang22 | grep -w $line | grep -v grep`
+        process=`ps aux | grep -w $line | grep -v grep`
         if [ -z "$process" ]
         then
             grep $line ~/monitor_title.txt | mail -s "Process done" "$receiver"
@@ -23,5 +23,5 @@ do
     done < ~/monitor_process.txt
     mv monitor_process.new ~/monitor_process.txt
     mv monitor_title.new ~/monitor_title.txt
-    sleep 600
+    sleep 60
 done
