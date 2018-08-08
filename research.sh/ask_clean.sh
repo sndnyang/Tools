@@ -8,6 +8,7 @@ do
         if [[ ! "$d" =~ ^[0-9]+$ ]]
         then
             echo "it contains chars, keep it"
+            continue
         fi
 
         if ls "$d"/*.npy > /dev/null 2>&1
