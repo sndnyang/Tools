@@ -17,16 +17,23 @@ do
             then
                 echo "there are npy files and figures, check it"
                 firstfile=`ls "$d"/*.png | sort | head -n 1`
-                eog "$firstfile"
+                eog "$firstfile"&
             else
                 echo "there are npy files, but no pictures, check it"
                 ls "$d"
             fi
             read -p "do you want to remove the directory ?(y/n)" input
             case $input in
-                    [yY][eE][sS]|[yY])
-                        rm -fr "$d"
-                    ;;
+                [yY][eE][sS]|[yY])
+                    rm -fr "$d"
+                ;;
+                *)
+                    read -p "can you rename it?" input
+                    if [[ $input != "no" ]]
+                    then
+                        mv "$d" "$input"
+                    fi
+                ;;
             esac
         else
             echo "There is no npy files, remove it"
