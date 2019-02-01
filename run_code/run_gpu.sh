@@ -1,5 +1,9 @@
 source ~/path/bin/activate
 
+count=`python ./some_exp.py | wc -l`
+
+no=0
+
 python ./some_exp.py | while read line
 do
     nvidia-smi > ~/nv.txt 
@@ -31,8 +35,11 @@ do
     then
         echo "min gpu use ", $min, "at", $n
         echo "$line"
-        /home/user/python/bin/python train_sync.py --gpu-id=$n $line &
-        sleep 25
+        # /home/user/python/bin/python train_sync.py --gpu-id=$n $line &
+        (( no = no + 1))
+        echo NO.$no task begins, $count in total
+        echo NO.$no task begins, $count in total > parameter_process.log
+        # sleep 25
     else
         echo "sleep"
         sleep 30
