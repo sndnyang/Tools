@@ -1,4 +1,4 @@
-source ~/software/dllib3/bin/activate
+source ~/path/bin/activate
 
 python ./some_exp.py | while read line
 do

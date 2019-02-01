@@ -1,7 +1,8 @@
-source ~/software/dllib3/bin/activate
+source ~/path/bin/activate
 
 python ./some_exp.py | while read line
 do
+    nvidia-smi > ~/nv.txt 
     array=`grep 12189 ~/nv.txt | head -n 3 | cut -d "|" -f 4 | cut -f 7 | cut -d "%" -f 1`
     min=100
     n=-1
