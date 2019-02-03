@@ -1,10 +1,10 @@
-source ~/path/bin/activate
+source ~/software/dllib3/bin/activate
 
 count=`python ./some_exp.py | wc -l`
 
 no=0
 
-python ./some_exp.py | while read line
+python ./some_exp.py  --file=$1 | while read line
 do
     nvidia-smi > ~/nv.txt 
     array=`grep 12189 ~/nv.txt | head -n 3 | cut -d "|" -f 4 | cut -f 7 | cut -d "%" -f 1`
@@ -35,7 +35,7 @@ do
     then
         echo "min gpu use ", $min, "at", $n
         echo "$line"
-        /home/user/python/bin/python train_sync.py --gpu-id=$n $line &
+        ~/software/dllib3/bin/python train_sync.py --gpu-id=$n $line &
         (( no = no + 1))
         echo NO.$no task begins, $count in total
         echo NO.$no task begins, $count in total > parameter_process.log
