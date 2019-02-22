@@ -1,48 +1,77 @@
-source ~/software/dllib3/bin/activate
+source ~/software/venv/dllib3/bin/activate
 
-count=`python ./some_exp.py | wc -l`
+para_file="para.ini"
+out_file="stdout"
+
+echo $#
+
+if [[ $# > 0 ]]
+then
+    para_file=$1
+fi
+if [[ $# > 1 ]]
+then
+    out_file=$2
+    echo > $2
+fi
+
+count=`python ./some_exp.py --file=$1 | wc -l`
+echo $count
 
 no=0
+python --version
 
-python ./some_exp.py  --file=$1 | while read line
+python ./some_exp.py --file=$1 | while read line
 do
-    nvidia-smi > ~/nv.txt 
-    array=`grep 12189 ~/nv.txt | head -n 3 | cut -d "|" -f 4 | cut -f 7 | cut -d "%" -f 1`
-    min=100
     n=-1
-    c=0
-    for j in $array
+    while (( n < 0 ))
     do
-        if ((j < min))
-        then
-            num=`grep " C " ~/nv.txt | grep " $c "| wc -l`
-            mem=`grep " C " ~/nv.txt | grep " $c " | awk 'BEGIN {num=0} {if ($0 ~ / C /) {gsub(/MiB/, "", $0); num+=$6} } END {print num}'`
-            echo $c "uses memory" $mem "with" $num processes
+        nvidia-smi > ~/nv.txt 
+        min=100
+        array=`grep 12189 ~/nv.txt | head -n 3 | cut -d "|" -f 4 | cut -f 7 | cut -d "%" -f 1`
+        c=0
+        n=-1
 
-            if (( num > 3 || mem > 10000 ))
+        for j in $array
+        do
+            if ((j < min))
             then
-                (( c = c+1 ))
-                continue
-            fi
-            (( min = j ))
-            ((n = c))
-        fi
+                num=`grep " C " ~/nv.txt | grep " $c "| wc -l`
+                mem=`grep " C " ~/nv.txt | grep " $c " | awk 'BEGIN {num=0} {if ($0 ~ / C /) {gsub(/MiB/, "", $0); num+=$6} } END {print num}'`
+                echo $c "uses memory" $mem "with" $num processes
 
-        (( c = c+1 ))
+                if (( num > 3 || mem > 10000 ))
+                then
+                    (( c = c+1 ))
+                    continue
+                fi
+                (( min = j ))
+                ((n = c))
+            fi
+
+            (( c = c+1 ))
+            if (( n < 0 ))
+            then
+                echo "sleep"
+                sleep 30
+            fi
+        done
     done
     
     if (( n > -1 ))
     then
         echo "min gpu use ", $min, "at", $n
         echo "$line"
-        ~/software/dllib3/bin/python train_sync.py --gpu-id=$n $line &
+        if [[ $# > 1 ]]
+        then
+            ~/software/miniconda3/envs/theano27/bin/python train_mnist_sup.py --gpu_id=$n $line >> $2 &
+        else
+            ~/software/miniconda3/envs/theano27/bin/python train_mnist_sup.py --gpu_id=$n $line &
+        fi
         (( no = no + 1))
         echo NO.$no task begins, $count in total
         echo NO.$no task begins, $count in total > parameter_process.log
-        sleep 25
-    else
-        echo "sleep"
-        sleep 30
+        sleep 50
     fi
 done
 
