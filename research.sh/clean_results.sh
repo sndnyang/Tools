@@ -3,7 +3,7 @@
 for marker in $*
 do
     echo $pid;
-    result_d=`find ~/project/results -name "*$marker\_*" -type d`
+    result_d=`find ~/project/results -name "*$marker*" -type d`
     echo "path is " $result_d
     if [[ -d "$result_d" ]]
     then
@@ -19,7 +19,7 @@ do
 
     tf_d=`find ~/project/runs -name "*$marker*" -type d`
     echo "path is " $tf_d
-    if [[ -d "$result_d" ]]
+    if [[ -d "$tf_d" ]]
     then
         read -p "do you want to remove the directory ?(y/n)" input
         case $input in

@@ -1,39 +1,41 @@
-source ~/software/venv/dllib3/bin/activate
 
 para_file="para.ini"
 out_file="stdout"
 
-echo $#
-
-if [[ $# > 0 ]]
+if [[ $# == 0 ]]
 then
-    para_file=$1
+    echo "need to specify the script"
 fi
+
 if [[ $# > 1 ]]
 then
-    out_file=$2
-    echo > $2
+    para_file=$2
+fi
+if [[ $# > 2 ]]
+then
+    out_file=$3
+    echo > $3
 fi
 
-count=`python ./some_exp.py --file=$1 | wc -l`
+count=`python ./some_exp.py --file=$para_file | wc -l`
 echo $count
 
 no=0
-python --version
 
-python ./some_exp.py --file=$1 | while read line
+python ./some_exp.py --file=$para_file | while read line
 do
     n=-1
     while (( n < 0 ))
     do
         nvidia-smi > ~/nv.txt 
         min=100
-        array=`grep 12189 ~/nv.txt | head -n 3 | cut -d "|" -f 4 | cut -f 7 | cut -d "%" -f 1`
+        array=`grep Default ~/nv.txt | tail -n 8 | head -n 7 | cut -d "|" -f 4 | cut -f 7 | cut -d "%" -f 1`
         c=0
         n=-1
 
         for j in $array
         do
+            echo $c use $j gpu
             if ((j < min))
             then
                 num=`grep " C " ~/nv.txt | grep " $c "| wc -l`
@@ -64,9 +66,11 @@ do
         echo "$line"
         if [[ $# > 1 ]]
         then
-            ~/software/miniconda3/envs/theano27/bin/python train_mnist_sup.py --gpu_id=$n $line >> $2 &
+            ~/software/miniconda3/envs/dllib3/bin/python $1 --gpu-id=$n $line >> $2 &
+            echo ""
         else
-            ~/software/miniconda3/envs/theano27/bin/python train_mnist_sup.py --gpu_id=$n $line &
+            ~/software/miniconda3/envs/dllib3/bin/python $1 --gpu-id=$n $line &
+            echo ""
         fi
         (( no = no + 1))
         echo NO.$no task begins, $count in total
