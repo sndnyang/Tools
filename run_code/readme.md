@@ -24,5 +24,6 @@ Use some_exp.py to get and check the parameters list.
 
 ## What you need to edit
 
-para.ini, the parameters and their options
+1. para.ini, the parameters and their options
+2. from Line 70, change the values.
 
