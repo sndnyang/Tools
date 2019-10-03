@@ -11,6 +11,7 @@ fi
 
 if [[ $# > 1 ]]
 then
+    # given the hyperparameters to tune and their search space(values)
     para_file=$2
 fi
 if [[ $# > 2 ]]

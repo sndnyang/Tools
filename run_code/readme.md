@@ -1,6 +1,10 @@
 # run and tune parameters
 
-example:
+Usage:
+
+    ./run_gpu.sh any_script_file_support_command_line_parameters  the_parameter_file
+
+An example of the parameter file(usually .ini file):
 
     [default]
     lmbd=0.1,1,10
@@ -9,16 +13,16 @@ example:
     u=0,1,10
     index-i=1,2
 
+Make sure your script use parameters with '--' prefix.  --dir --data --lambda.  Don't support sinle '-', such as -t -port.
+
 Use some_exp.py to get and check the parameters list.
 
-The run_c|gpu.sh will call some_exp.py and run your code/experiments of different parameters when your gpu/cpu usage is fine. 
+## requirements
+
+1. termcolor
+2. GPUtil
 
 ## What you need to edit
 
-1. run_c|gpu.sh  
-    1. your python intepreter path
-    2. your main python script
-    3. (for gpu) the gpu id list you can use. The list is controled by "head -n" and "c=0". If you want to use GPU 2 3 4 5, you need to change to "tail -n " and "c=2".
-2. para.ini, the parameters and their options
-    
+para.ini, the parameters and their options
 
