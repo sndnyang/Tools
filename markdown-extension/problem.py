@@ -1,4 +1,4 @@
-﻿# -*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 Problem Extension for Python-Markdown
 ============================================
@@ -17,10 +17,9 @@ import sys
 import traceback
 from . import Extension
 from ..preprocessors import Preprocessor
-from ..inlinepatterns import Pattern
 
 import re
-import md5
+# import md5
 
 from lxml import etree
 
@@ -48,13 +47,12 @@ BASE_RE = r'^{%(\w*|[^%{}@]*@[^%}]*)%?}'
 class ProblemExtension(Extension):
     """ Problem Extension for Python-Markdown. """
 
-    def extendMarkdown(self, md, md_globals):
+    def extendMarkdown(self, md):
         """ Insert ProblemPreprocessor before ReferencePreprocessor. """
-        # md.inlinePatterns.add('problem', ProblemPattern(BASE_RE), '>not_strong')
+        self.md = md
         problemer = ProblemProcessor(md)
-        md.registerExtension(self)
-        md.preprocessors.add('problem', problemer,
-                             ">normalize_whitespace")
+        problemer.md = md
+        md.preprocessors.register(problemer, 'problem', 33)
 
 
 
@@ -123,8 +121,8 @@ def renderQuestion(s, quiz_count):
         div.append(t)
     except:
         sys.stderr.write(ele + '    ' + answers)
-        print answers, ele
-        print traceback.print_exc()
+        print(answers, ele)
+        print(traceback.print_exc())
 
     comments = finite_status_machine(s[s.find('#')+1:], '#')
     if comments:
@@ -136,7 +134,7 @@ def renderQuestion(s, quiz_count):
     div.append(submit)
     div.append(etree.Element('br'))
 
-    # print etree.tostring(div, encoding='utf8')
+    # print(etree.tostring(div, encoding='utf8'))
     return div
 
 
@@ -144,7 +142,7 @@ class ProblemProcessor(Preprocessor):
     """ parse multiple line problems"""
     def run(self, lines):
         """ find code blocks problems"""
-        content = "\n".join(lines)
+        content = '\n'.join(lines)
 
         start = content.find("{%")
         lists = []
@@ -157,7 +155,7 @@ class ProblemProcessor(Preprocessor):
         for s in lists:
             html = renderQuestion(s, c)
             c += 1
-            content = content.replace(s, etree.tostring(html, encoding='utf-8'))
+            content = content.replace(s, etree.tostring(html, encoding='utf-8').decode('utf-8'))
        
         return content.split("\n")
 
